@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.quick.questions.ws.UserRepository;
 import com.quick.questions.ws.io.entity.UserEntity;
 import com.quick.questions.ws.service.UserService;
+import com.quick.questions.ws.shared.Utills;
 import com.quick.questions.ws.shared.dto.UserDto;
 @Service
 public class UserServiceImpl implements UserService {
@@ -14,16 +15,21 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	UserRepository userRepository;
 	
+	@Autowired
+	Utills utils;
+	
 	@Override
 	public UserDto createUser(UserDto userdto) {
 		// TODO Auto-generated method stub
 		
+		if(userRepository.findByEmail(userdto.getEmail()) != null) throw new RuntimeException("user already exists");
 		UserEntity userEntity = new UserEntity();
 		BeanUtils.copyProperties(userdto, userEntity);
 		
 		
 		userEntity.setEncryptedPassword("test");
-		userEntity.setUserId("testUserId");
+		String userId =utils.generatedString(30);
+		userEntity.setUserId(userId);
 		
 		UserEntity storedUserEntity=userRepository.save(userEntity);
 		
