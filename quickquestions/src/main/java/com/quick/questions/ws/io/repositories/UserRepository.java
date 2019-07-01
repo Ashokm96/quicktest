@@ -1,4 +1,4 @@
-package com.quick.questions.ws;
+package com.quick.questions.ws.io.repositories;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
