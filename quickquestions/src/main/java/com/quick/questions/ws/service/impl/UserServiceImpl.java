@@ -68,4 +68,15 @@ public class UserServiceImpl implements UserService {
 		BeanUtils.copyProperties(userEntity, returnedUserDto);
 		return returnedUserDto;
 	}
+
+	@Override
+	public UserDto getUserByUserId(String userId) {
+		// TODO Auto-generated method stub
+		UserDto returnedUserDto = new UserDto();
+		
+		UserEntity userEntity = userRepository.findByUserId(userId);
+		if(userEntity == null) throw new UsernameNotFoundException(userId	);
+		BeanUtils.copyProperties(userEntity, returnedUserDto);
+		return returnedUserDto;
+	}
 }
