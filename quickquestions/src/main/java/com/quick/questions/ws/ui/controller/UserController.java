@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.quick.questions.ws.exceptions.UserServiceException;
 import com.quick.questions.ws.service.UserService;
 import com.quick.questions.ws.shared.dto.UserDto;
 import com.quick.questions.ws.ui.model.request.UserDetailsRequestModel;
+import com.quick.questions.ws.ui.model.response.ErrorMessage;
 import com.quick.questions.ws.ui.model.response.UserDetailsResponseModel;
 
 @RestController
@@ -30,6 +32,8 @@ public class UserController {
 		
 		UserDetailsResponseModel userDetailsResponseModel = new UserDetailsResponseModel();
 		
+		
+		
 		UserDto	getUser =userService.getUserByUserId(id);
 		BeanUtils.copyProperties(getUser, userDetailsResponseModel);
 		return userDetailsResponseModel;
@@ -38,8 +42,12 @@ public class UserController {
 	@PostMapping(
 			consumes = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE},
 			produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
-	public UserDetailsResponseModel createUser(@RequestBody UserDetailsRequestModel userDeatialsReqModel) {
+	public UserDetailsResponseModel createUser(@RequestBody UserDetailsRequestModel userDeatialsReqModel) throws Exception {
 		UserDetailsResponseModel userResponse = new UserDetailsResponseModel();
+		
+		if(userDeatialsReqModel.getFirstName().isEmpty())
+			throw new NullPointerException("The Object is null");
+		
 		UserDto userDto = new UserDto();
 		BeanUtils.copyProperties(userDeatialsReqModel, userDto);
 		
@@ -48,9 +56,23 @@ public class UserController {
 		return userResponse;
 	}
 	
-	@PutMapping
-	public String updateUser() {
-		return "update user called";
+	@PutMapping(
+			path ="/{id}",
+			consumes = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE},
+			produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	public UserDetailsResponseModel updateUser(@RequestBody UserDetailsRequestModel userDeatialsReqModel, @PathVariable String id) {
+		
+		UserDetailsResponseModel userResponse = new UserDetailsResponseModel();
+		
+		if(userDeatialsReqModel.getFirstName().isEmpty())
+			throw new NullPointerException("The Object is null");
+		
+		UserDto userDto = new UserDto();
+		BeanUtils.copyProperties(userDeatialsReqModel, userDto);
+		
+		UserDto	updatedUser=userService.updateUser(id,userDto);
+		BeanUtils.copyProperties(updatedUser, userResponse);
+		return userResponse;
 	}
 	@DeleteMapping
 	public String deleteUser() {
