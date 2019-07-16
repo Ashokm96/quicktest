@@ -17,6 +17,9 @@ import com.quick.questions.ws.service.UserService;
 import com.quick.questions.ws.shared.dto.UserDto;
 import com.quick.questions.ws.ui.model.request.UserDetailsRequestModel;
 import com.quick.questions.ws.ui.model.response.ErrorMessage;
+import com.quick.questions.ws.ui.model.response.OperationStatusModel;
+import com.quick.questions.ws.ui.model.response.RequestOperationName;
+import com.quick.questions.ws.ui.model.response.RequestOperationStatus;
 import com.quick.questions.ws.ui.model.response.UserDetailsResponseModel;
 
 @RestController
@@ -74,8 +77,14 @@ public class UserController {
 		BeanUtils.copyProperties(updatedUser, userResponse);
 		return userResponse;
 	}
-	@DeleteMapping
-	public String deleteUser() {
-		return "delete user called";
+	@DeleteMapping(
+			path ="/{id}",
+			produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	public OperationStatusModel deleteUser(@PathVariable String id) {
+		OperationStatusModel operationStatusModel = new OperationStatusModel();
+		operationStatusModel.setOperationName(RequestOperationName.DELETE.name());
+		operationStatusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
+		userService.deleteUser(id);
+		return operationStatusModel;
 	}
 }
