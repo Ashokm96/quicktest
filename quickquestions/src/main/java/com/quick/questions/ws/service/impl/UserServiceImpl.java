@@ -1,9 +1,13 @@
 package com.quick.questions.ws.service.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -77,7 +81,7 @@ public class UserServiceImpl implements UserService {
 		UserDto returnedUserDto = new UserDto();
 		
 		UserEntity userEntity = userRepository.findByUserId(userId);
-		if(userEntity == null) throw new UsernameNotFoundException(userId);
+		if(userEntity == null) throw new UserServiceException(ErrorMessage.NO_RECORD_FOUND.getErrorMessage());
 		BeanUtils.copyProperties(userEntity, returnedUserDto);
 		return returnedUserDto;
 	}
@@ -106,5 +110,23 @@ public class UserServiceImpl implements UserService {
 		}
 		userRepository.delete(userEntity);
 		
+	}
+
+	@Override
+	public List<UserDto> getUsers(int page, int limit) {
+		// TODO Auto-generated method stub
+		List<UserDto> userDtoList = new ArrayList<UserDto>();
+		if(page >0 ) page = page-1;
+		Pageable pageable = PageRequest.of(page, limit);
+		Page<UserEntity>  userPage= userRepository.findAll(pageable);
+		List<UserEntity> userEntityList = userPage.getContent();
+		
+		for (UserEntity userEntity : userEntityList) {
+			UserDto userDto = new UserDto();
+			BeanUtils.copyProperties(userEntity, userDto);
+			userDtoList.add(userDto);
+		}
+		
+		return userDtoList;
 	}
 }
