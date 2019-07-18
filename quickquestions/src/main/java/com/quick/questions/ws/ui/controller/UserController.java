@@ -3,6 +3,7 @@ package com.quick.questions.ws.ui.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -54,9 +55,12 @@ public class UserController {
 		
 		if(userDeatialsReqModel.getFirstName().isEmpty())
 			throw new NullPointerException("The Object is null");
-		
-		UserDto userDto = new UserDto();
-		BeanUtils.copyProperties(userDeatialsReqModel, userDto);
+		ModelMapper modelMapper = new ModelMapper();
+		UserDto userDto = modelMapper.map(userDeatialsReqModel, UserDto.class);
+		/*
+		 * UserDto userDto = new UserDto();
+		 * BeanUtils.copyProperties(userDeatialsReqModel, userDto);
+		 */
 		
 		UserDto	createdUser=userService.createUser(userDto);
 		BeanUtils.copyProperties(createdUser, userResponse);
