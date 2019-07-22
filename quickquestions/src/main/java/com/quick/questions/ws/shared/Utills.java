@@ -14,6 +14,9 @@ public class Utills {
     public String generatedString(int len){
         return generatedRandomUserId(len);
     }
+    public String generatedAddressId(int len){
+        return generatedRandomUserId(len);
+    }
     public String generatedRandomUserId(int length){
         StringBuilder returnedValue = new StringBuilder(length);
        for(int i = 0; i < length;i++){

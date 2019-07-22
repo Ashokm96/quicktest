@@ -3,6 +3,7 @@ package com.quick.questions.ws.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import com.quick.questions.ws.io.entity.UserEntity;
 import com.quick.questions.ws.io.repositories.UserRepository;
 import com.quick.questions.ws.service.UserService;
 import com.quick.questions.ws.shared.Utills;
+import com.quick.questions.ws.shared.dto.AddressDTO;
 import com.quick.questions.ws.shared.dto.UserDto;
 import com.quick.questions.ws.ui.model.response.ErrorMessage;
 @Service
@@ -38,18 +40,32 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		
 		if(userRepository.findByEmail(userdto.getEmail()) != null) throw new RuntimeException("user already exists");
-		UserEntity userEntity = new UserEntity();
-		BeanUtils.copyProperties(userdto, userEntity);
+		//UserEntity userEntity = new UserEntity();
+		
+		for (int i = 0; i < userdto.getAddresses().size(); i++) {
+			
+			AddressDTO addressDto = userdto.getAddresses().get(i);
+			addressDto.setUserDetails(userdto);
+			addressDto.setAddressId(utils.generatedAddressId(30));
+			userdto.getAddresses().set(i, addressDto);
+			
+		}
+		
+		ModelMapper modelMapper = new ModelMapper();
+		UserEntity userEntity = modelMapper.map(userdto, UserEntity.class);
+		//BeanUtils.copyProperties(userdto, userEntity);
 		
 		
-		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userdto.getPassword()));
+		
 		String userId =utils.generatedString(30);
 		userEntity.setUserId(userId);
 		userEntity.setEmailVerificationStatus(false);
+		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userdto.getPassword()));
 		UserEntity storedUserEntity=userRepository.save(userEntity);
 		
-		UserDto returnedUserDto = new UserDto();
-		BeanUtils.copyProperties(storedUserEntity, returnedUserDto);
+		
+		 UserDto returnedUserDto = modelMapper.map(storedUserEntity, UserDto.class);
+		//BeanUtils.copyProperties(storedUserEntity, returnedUserDto);
 		
 		return returnedUserDto;
 	}
