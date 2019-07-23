@@ -1,5 +1,8 @@
 package com.quick.questions.ws.ui.controller;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
@@ -33,7 +37,7 @@ import com.quick.questions.ws.ui.model.response.RequestOperationStatus;
 import com.quick.questions.ws.ui.model.response.UserDetailsResponseModel;
 
 @RestController
-@RequestMapping("users") //http://localhost:8080/users
+@RequestMapping("/users") //http://localhost:8080/users
 public class UserController {
 
 	@Autowired
@@ -127,7 +131,7 @@ public class UserController {
 	@GetMapping(path = "/{id}/addresses",
 			produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE,
 					"application/hal+json"})
-	public List<AddressResponseModel> getUserAddresses(@PathVariable String id) {
+	public Resources<AddressResponseModel> getUserAddresses(@PathVariable String id) {
 		
 		List<AddressResponseModel> addressResponseModel = new ArrayList<>();
 		
@@ -140,24 +144,24 @@ public class UserController {
 			
 			
 			 addressResponseModel = new ModelMapper().map(addressesDto, listType);
-			/*
-			 * for (AddressResponseModel addressResponse : addressResponseModel) { Link
-			 * addressLink = linkTo(methodOn(UserController.class).getUserAddress(id,
-			 * addressResponse.getAddressId())) .withSelfRel();
-			 * addressResponse.add(addressLink); Link userLink =
-			 * linkTo(methodOn(UserController.class).getUsers(id)) .withRel("user");
-			 * addressResponse.add(userLink); }
-			 */
+			
+			  for (AddressResponseModel addressResponse : addressResponseModel) { Link
+			  addressLink = linkTo(methodOn(UserController.class).getUserAddress(id,
+			  addressResponse.getAddressId())) .withSelfRel();
+			  addressResponse.add(addressLink); 
+			  Link userLink = linkTo(methodOn(UserController.class).getUsers(id)) .withRel("user");
+			  addressResponse.add(userLink); }
+			 
 		}
-		 return addressResponseModel;
+		// return addressResponseModel;
 		
-		//return new Resources<>(addressResponseModel);
+		return new Resources<>(addressResponseModel);
 	}
 	
 	@GetMapping(path = "/{id}/addresses/{address_id}", 
 			produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE, 
 					"application/hal+json"})
-	public AddressResponseModel getUserAddress(@PathVariable String id,@PathVariable String address_id) {
+	public Resource<AddressResponseModel> getUserAddress(@PathVariable String id,@PathVariable String address_id) {
 		
 		
 		
@@ -173,13 +177,21 @@ public class UserController {
 		 * linkTo(methodOn(UserController.class).getUserAddresses(address_id))
 		 * .withRel("addresses");
 		 */
-			AddressResponseModel addressResponseModel = modelMapper.map(addressesDto, AddressResponseModel.class);
+			
 		/*
 		 * addressResponseModel.add(addressLink); addressResponseModel.add(userLink);
 		 * addressResponseModel.add(addressesLink);
 		 */
-		
-			return new ModelMapper().map(addressesDto, AddressResponseModel.class );
-		//return new Resource<AddressResponseModel>(addressResponseModel);
+			Link addressLink = linkTo(methodOn(UserController.class).getUserAddress(id,
+					 address_id)) .withSelfRel();
+			Link addressesLink = linkTo(methodOn(UserController.class).getUserAddresses(id))
+			 .withRel("addresses");
+			Link userLink = linkTo(methodOn(UserController.class).getUsers(id)) .withRel("user");
+			AddressResponseModel addressResponseModel=modelMapper.map(addressesDto, AddressResponseModel.class );
+			addressResponseModel.add(addressLink);
+			addressResponseModel.add(userLink);
+			addressResponseModel.add(addressesLink);
+			//return 
+		return new Resource<AddressResponseModel>(addressResponseModel);
 	}
 }

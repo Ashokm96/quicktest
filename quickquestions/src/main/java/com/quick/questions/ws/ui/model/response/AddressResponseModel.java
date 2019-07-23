@@ -1,6 +1,8 @@
 package com.quick.questions.ws.ui.model.response;
 
-public class AddressResponseModel {
+import org.springframework.hateoas.ResourceSupport;
+
+public class AddressResponseModel extends ResourceSupport {
 
 	private String addressId; 
 	private String city;

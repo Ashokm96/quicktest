@@ -1,6 +1,6 @@
 package com.quick.questions.ws.ui.model.request;
 
-public class AddressRequestModel {
+public class AddressRequestModel   {
 
 	private String city;
 	private String country;
