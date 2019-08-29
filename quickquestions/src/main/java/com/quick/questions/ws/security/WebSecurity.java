@@ -25,11 +25,22 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception{
 		http.csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
 		.permitAll().
+		antMatchers(HttpMethod.OPTIONS,"/**").permitAll().
+		antMatchers(HttpMethod.GET, SecurityConstants.VERIFICATION_EMAIL_URL)
+		.permitAll().
+		antMatchers(HttpMethod.POST, SecurityConstants.RESET_PASSWORD_URL)
+		.permitAll().
+		antMatchers(HttpMethod.POST, SecurityConstants.RESET_PASSWORD_REQUEST_URL)
+		.permitAll().
+		antMatchers(SecurityConstants.H2_CONSOLE)
+		.permitAll().
 		anyRequest().
 		authenticated().and().addFilter(getAuthenticationFilter())
 		.addFilter(new AuthorizationFilter(authenticationManager()))
 		.sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		
+		http.headers().frameOptions().disable();
 	}
 	
 	@Override
@@ -40,7 +51,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 	
 	public AuthenticationFilter getAuthenticationFilter() throws Exception {
 		final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
-		filter.setFilterProcessesUrl("/userLogin");
+		filter.setFilterProcessesUrl("/users/Login");
 		return filter;
 		
 	}

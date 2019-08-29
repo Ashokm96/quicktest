@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
@@ -30,10 +31,13 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 			chain.doFilter(req, resp);
 			return;
 		}
-		
+		try {
 		UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		chain.doFilter(req, resp);
+		}catch(ExpiredJwtException eje) {
+			System.out.println("Token not available");
+		}
 	}
 	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest req) {
 		// TODO Auto-generated method stub

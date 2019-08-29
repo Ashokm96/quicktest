@@ -2,6 +2,7 @@ package com.quick.questions.ws.shared.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 public class UserDto implements Serializable {
 
@@ -16,6 +17,17 @@ public class UserDto implements Serializable {
 	private String emailVerificationToken;
 	private Boolean emailVerificationStatus;
 	private List<AddressDTO> addresses;
+	
+private Set<UserRoleDto> userRoles;
+	
+	private List<UserPaymentDTO> userPaymentList;
+	
+	private List<UserShippingDTO> userShippingList;
+	
+	public UserDto() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	
 	public List<AddressDTO> getAddresses() {
 		return addresses;
@@ -76,6 +88,30 @@ public class UserDto implements Serializable {
 	}
 	public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
 		this.emailVerificationStatus = emailVerificationStatus;
+	}
+
+	public Set<UserRoleDto> getUserRoles() {
+		return userRoles;
+	}
+
+	public void setUserRoles(Set<UserRoleDto> userRoles) {
+		this.userRoles = userRoles;
+	}
+
+	public List<UserPaymentDTO> getUserPaymentList() {
+		return userPaymentList;
+	}
+
+	public void setUserPaymentList(List<UserPaymentDTO> userPaymentList) {
+		this.userPaymentList = userPaymentList;
+	}
+
+	public List<UserShippingDTO> getUserShippingList() {
+		return userShippingList;
+	}
+
+	public void setUserShippingList(List<UserShippingDTO> userShippingList) {
+		this.userShippingList = userShippingList;
 	}
 	
 	

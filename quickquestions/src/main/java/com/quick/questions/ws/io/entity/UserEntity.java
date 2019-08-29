@@ -1,14 +1,20 @@
 package com.quick.questions.ws.io.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity(name="users")
 public class UserEntity implements Serializable{
@@ -17,6 +23,7 @@ public class UserEntity implements Serializable{
 	
 	@Id
 	@GeneratedValue
+	@Column(nullable=false, updatable = false)
 	private Long id;
 	
 	@Column(nullable=false)
@@ -42,6 +49,21 @@ public class UserEntity implements Serializable{
 	
 	@OneToMany(mappedBy = "userDetails", cascade = CascadeType.ALL)
 	private List<AddressEntity> addresses;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "userDetails", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<UserRoleEntity> userRoles = new HashSet<>();
+	
+	
+	@JsonIgnore
+	@OneToMany(cascade=CascadeType.ALL, mappedBy = "user")
+	private List<UserPaymentEntity> userPaymentList;
+	
+	@OneToMany(cascade=CascadeType.ALL, mappedBy = "user")
+	private List<UserShippingEntity> userShippingList;
+	
+	@OneToOne(cascade=CascadeType.ALL, mappedBy = "user")
+	private ShoppingCartEntity shoppingCart;
 
 	public Long getId() {
 		return id;
@@ -113,6 +135,38 @@ public class UserEntity implements Serializable{
 
 	public void setAddresses(List<AddressEntity> addresses) {
 		this.addresses = addresses;
+	}
+
+	public Set<UserRoleEntity> getUserRoles() {
+		return userRoles;
+	}
+
+	public void setUserRoles(Set<UserRoleEntity> userRoles) {
+		this.userRoles = userRoles;
+	}
+
+	public List<UserPaymentEntity> getUserPaymentList() {
+		return userPaymentList;
+	}
+
+	public void setUserPaymentList(List<UserPaymentEntity> userPaymentList) {
+		this.userPaymentList = userPaymentList;
+	}
+
+	public List<UserShippingEntity> getUserShippingList() {
+		return userShippingList;
+	}
+
+	public void setUserShippingList(List<UserShippingEntity> userShippingList) {
+		this.userShippingList = userShippingList;
+	}
+
+	public ShoppingCartEntity getShoppingCart() {
+		return shoppingCart;
+	}
+
+	public void setShoppingCart(ShoppingCartEntity shoppingCart) {
+		this.shoppingCart = shoppingCart;
 	}
 	
 	
