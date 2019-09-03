@@ -54,8 +54,6 @@ public class AmazonSES {
 	
 	public void verifyEmail(UserDto userDto) {
 		
-		System.setProperty("aws.accessKeyId", "AKIASCWPUIKGJLUD5B65");
-		System.setProperty("aws.secretKey", "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");
 		
 		/*
 		 * AWSCredentialsProvider provider = new AWSCredentialsProvider() {
