@@ -92,9 +92,7 @@ public class AmazonSES {
 		// TODO Auto-generated method stub
 		boolean returnValue = false;
 		
-		System.setProperty("aws.accessKeyId", "AKIASCWPUIKGJLUD5B65");
-		System.setProperty("aws.secretKey", "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");
-		
+	
 		AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
 				.withRegion(Regions.US_EAST_1).build();
 		System.out.println("Client details ==  "+client);
